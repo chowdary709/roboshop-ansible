@@ -6,6 +6,11 @@
     src: mongo.repo
     dest: /etc/yum.repos.d/mongo.repo
 
+- name: setup mongodb repos
+  ansible.builtin.template:
+    src: mongod.repo
+    dest: /etc/mongod.conf
+
 - name: Start mongodb
   ansible.builtin.systemd_service:
     state: restarted
