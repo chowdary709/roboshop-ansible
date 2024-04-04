@@ -17,3 +17,6 @@
     name: mongod
     enabled: yes
 
+- name: Debugging - Display public IP address
+  ansible.builtin.debug:
+    msg: "Public IP address is {{ ansible_default_ipv4.address }}"
