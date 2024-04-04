@@ -8,7 +8,7 @@
 
 - name: setup mongodb repos
   ansible.builtin.template:
-    src: mongod.repo
+    src: mongod.conf
     dest: /etc/mongod.conf
 
 - name: Start mongodb
