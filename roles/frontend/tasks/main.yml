@@ -33,13 +33,14 @@
     name: nginx
     enabled: yes
 
-- name: Gather public IP address
-  ansible.builtin.shell: curl -s ifconfig.me
-  register: public_ip
+- name: Install Filebeat
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: public-IP
 
-- name: Debugging - Display public IP address
-  ansible.builtin.debug:
-    msg: "Public IP address is {{ public_ip.stdout }}"
+
+
+
 #  ---------------
 
 
