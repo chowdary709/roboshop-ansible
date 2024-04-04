@@ -33,10 +33,10 @@
     name: nginx
     enabled: yes
 
-- name: Install Filebeat
+- name: public ip import role
   ansible.builtin.import_role:
     name: common
-    tasks_from: public-IP
+    tasks_from: public_ip
 
 
 
