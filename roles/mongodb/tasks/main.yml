@@ -1,18 +1,42 @@
+#- name: Set Hostname
+#  ansible.builtin.shell: set-hostname mongodb
+#
+#- name: setup mongodb repos
+#  ansible.builtin.template:
+#    src: mongo.repo
+#    dest: /etc/yum.repos.d/mongo.repo
+#
+#- name: setup mongodb repos
+#  ansible.builtin.template:
+#    src: mongod.conf
+#    dest: /etc/mongod.conf
+#
+#- name: Start mongodb
+#  ansible.builtin.systemd_service:
+#    state: restarted
+#    name: mongod
+#    enabled: yes
+
+
 - name: Set Hostname
   ansible.builtin.shell: set-hostname mongodb
 
-- name: setup mongodb repos
+- name: Gather public IP address
+  ansible.builtin.shell: curl -s ifconfig.me
+  register: public_ip
+
+- name: Setup mongodb repos
   ansible.builtin.template:
     src: mongo.repo
     dest: /etc/yum.repos.d/mongo.repo
 
-- name: setup mongodb repos
+- name: Setup mongodb config
   ansible.builtin.template:
     src: mongod.conf
     dest: /etc/mongod.conf
 
 - name: Start mongodb
-  ansible.builtin.systemd_service:
+  ansible.builtin.systemd:
     state: restarted
     name: mongod
     enabled: yes
