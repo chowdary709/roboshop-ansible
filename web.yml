@@ -2,43 +2,32 @@
   hosts: localhost
   become: true
   tasks:
-    - name: Install nginx
-      ansible.builtin.dnf:
+    - name: Install Nginx
+      ansible.builtin.yum:
         name: nginx
-        state: present
+        state: installed
 
-    - name: remove nginx web content
+    - name: Removing Old Web Content
       ansible.builtin.file:
-        path: /usr/share/nginx/html/*
-        state: absent ##
+        path: /usr/share/nginx/html
+        state: absent
 
-    - name: download nginx web content
+    - name: Downloading Nginx Web Content & Extract it
       ansible.builtin.unarchive:
-        src:  https://roboshop-builds.s3.amazonaws.com/web.zip
-        dest: /usr/share/nginx/html
+        src: https://roboshop-artifacts.s3.amazonaws.com/frontend.zip
+        dest: /tmp
         remote_src: yes
 
 
-    - name: Copy RoboShop Nginx Config file
-      ansible.builtin.template:
+    - name: copy roboshop configuration
+      ansible.builtin.copy:
         src: roboshop.conf
         dest: /etc/nginx/default.d/roboshop.conf
 
 
-    - name: Start Nginx Service
-      ansible.builtin.systemd:
-        state: started
+    - name: start and enable nginx
+      ansible.builtin.service:
         name: nginx
+        state: restarted
         enabled: yes
 
-
-#     - name: Proxy Configuration
-#       ansible.builtin.file:
-#         src: roboshop.conf
-#         dest: /etc/nginx/default.d/roboshop.conf
-
-#     - name: Copy RoboShop Nginx Config file
-#       ansible.builtin.template:
-#         src: roboshop.conf
-#         dest: /etc/nginx/default.d/roboshop.conf
-# #       notify: Restart Nginx Service
