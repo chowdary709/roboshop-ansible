@@ -18,19 +18,27 @@
         dest: /usr/share/nginx/html
         remote_src: yes
 
-#     - name: Proxy Configuration
-#       ansible.builtin.file:
-#         src: roboshop.conf
-#         dest: /etc/nginx/default.d/roboshop.conf
 
     - name: Copy RoboShop Nginx Config file
       ansible.builtin.template:
         src: roboshop.conf
         dest: /etc/nginx/default.d/roboshop.conf
-#       notify: Restart Nginx Service
 
-    - name: Start service nginx
-      ansible.builtin.service:
-        name: nginx
+
+    - name: Start Nginx Service
+      ansible.builtin.systemd:
         state: started
-        enable: true
+        name: nginx
+        enabled: yes
+
+
+#     - name: Proxy Configuration
+#       ansible.builtin.file:
+#         src: roboshop.conf
+#         dest: /etc/nginx/default.d/roboshop.conf
+
+#     - name: Copy RoboShop Nginx Config file
+#       ansible.builtin.template:
+#         src: roboshop.conf
+#         dest: /etc/nginx/default.d/roboshop.conf
+# #       notify: Restart Nginx Service
