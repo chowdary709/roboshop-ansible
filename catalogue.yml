@@ -60,7 +60,7 @@
       ansible.builtin.shell: mongo --host mongodb.chowdary.cloud </app/schema/catalogue.js
 
 
-    - name: start nodejs service
+    - name: start catalogue service
       ansible.builtin.service:
         name: catalogue
         state: started
