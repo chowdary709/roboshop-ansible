@@ -28,7 +28,37 @@
         dest: /app
         remote_src: yes
 
+
     - name: Install NodeJS dependencies
       ansible.builtin.shell: npm install
       args:
         chdir: /app
+
+    - name: copy mongodb repo
+      ansible.builtin.copy:
+        src: catalogue.service
+        dest: /etc/systemd/system/catalogue.service
+
+
+    - name: demon reload and start
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: start nodejs service
+      ansible.builtin.service:
+        name: nodejs
+        state: started
+
+    - name: setup mongodb repo file
+      ansible.builtin.copy:
+        src: mongo.repo
+        dest: /etc/yum.repos.d/mongo.repo
+
+    - name: install mangodb-client
+      ansible.builtin.dnf:
+        name: mongodb-org-shell
+        state: present
+
+
+    - name: Load Schema
+      ansible.builtin.shell: mongo --host MONGODB-SERVER-IPADDRESS </app/schema/catalogue.js
