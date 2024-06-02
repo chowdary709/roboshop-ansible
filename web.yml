@@ -2,6 +2,10 @@
   hosts: web
   become: yes
   tasks:
+
+  - name: setup host name
+    ansible.builtin.shell: set-hostname web
+
   - name: install nginx
     ansible.builtin.dnf:
       name: nginx
@@ -38,3 +42,5 @@
       name: nginx
       state: restarted
       enabled: yes
+  - name: status nginx
+    ansible.builtin.shell: systemctl status nginx
