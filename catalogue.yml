@@ -62,5 +62,5 @@
 
     - name: start nodejs service
       ansible.builtin.service:
-        name: nodejs
+        name: catalogue
         state: started
