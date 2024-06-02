@@ -1,0 +1,22 @@
+- name: setup mysql component
+  hosts: mysql
+  become: true
+  tasks:
+    - name: disable MySQL 8 version
+      ansible.builtin.shell: dnf module disable mysql -y
+
+    - name: copy mysql repo
+      ansible.builtin.copy:
+        sre: mysql.rpo
+        dest: /etc/yum.repos.d/mysql.repo
+
+    - name: install mysql server
+      ansible.builtin.dns:
+        name: mysql-community-server
+        state: present
+
+    - name: start and enable mysql
+      ansible.builtin.service:
+        name: mysqld
+        state: restarted
+        enabled: yes
