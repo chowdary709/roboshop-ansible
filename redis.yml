@@ -1,4 +1,4 @@
-- name: redis setup
+- name: install redis component
   hosts: mongodb
   become: true
   tasks:

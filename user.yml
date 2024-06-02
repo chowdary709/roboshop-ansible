@@ -1,5 +1,5 @@
-- name: setup user
-  hosts: mongodb
+- name: install user component
+  hosts: user
   become: yes
   tasks:
     - name: disable nodejs
