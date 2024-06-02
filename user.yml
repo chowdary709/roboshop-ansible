@@ -1,65 +1,146 @@
-- name: install user component
+# - name: install user component
+#   hosts: user
+#   become: yes
+#   tasks:
+#     - name: disable nodejs
+#       ansible.builtin.shell: dnf module disable nodejs -y
+#
+#     - name: enable nodejs
+#       ansible.builtin.shell: dnf module enable nodejs:18 -y
+#
+#     - name: install nodejs
+#       ansible.builtin.dnf:
+#         name: nodejs
+#         state: present
+#
+#     - name: Add roboshop user
+#       ansible.builtin.user:
+#         name: roboshop
+#
+#     - name: create app directory
+#       ansible.builtin.file:
+#         path: /app
+#         state: directory
+#
+#     - name: download and extract content
+#       ansible.builtin.unarchive:
+#         src: https://roboshop-builds.s3.amazonaws.com/user.zip
+#         dest: /app
+#         remote_src: yes
+#
+#     - name: Install NodeJS dependencies
+#       ansible.builtin.shell: npm install
+#       args:
+#         chdir: /app
+#
+#
+#     - name: copy user service
+#       ansible.builtin.copy:
+#         src: user.service
+#         dest: /etc/systemd/system/user.service
+#
+#     - name: demon reload and start
+#       ansible.builtin.systemd_service:
+#         daemon_reload: true
+#
+#
+#     - name: setup mongodb repo file
+#       ansible.builtin.copy:
+#         src: mongo.repo
+#         dest: /etc/yum.repos.d/mongo.repo
+#
+#     - name: install mangodb-client
+#       ansible.builtin.dnf:
+#         name: mongodb-org-shell
+#         state: present
+#
+#     - name: Load Schema
+#       ansible.builtin.shell: mongo --host mongodb.chowdary.cloud </app/schema/catalogue.js
+#
+#
+#     - name: start user service
+#       ansible.builtin.service:
+#         name: user
+#         state: restarted
+#         enabled: yes
+
+- name: user
   hosts: user
   become: yes
   tasks:
-    - name: disable nodejs
-      ansible.builtin.shell: dnf module disable nodejs -y
+  - name: disable old nodejs and enable nodejs
+    ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:18 -y
 
-    - name: enable nodejs
-      ansible.builtin.shell: dnf module enable nodejs:18 -y
+  - name: Install nodejs
+    ansible.builtin.dnf:
+      name: nodejs
+      state: present
 
-    - name: install nodejs
-      ansible.builtin.dnf:
-        name: nodejs
-        state: present
+  - name: create roboshop user
+    ansible.builtin.user:
+      name: roboshop
 
-    - name: Add roboshop user
-      ansible.builtin.user:
-        name: roboshop
+  - name: Recursively remove app directory
+    ansible.builtin.file:
+      path: /app
+      state: absent
 
-    - name: create app directory
-      ansible.builtin.file:
-        path: /app
-        state: directory
+  - name: create app directory
+    ansible.builtin.file:
+      path: /app
+      state: directory
 
-    - name: download and extract content
-      ansible.builtin.unarchive:
-        src: https://roboshop-builds.s3.amazonaws.com/user.zip
-        dest: /app
-        remote_src: yes
+  - name: download user application
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/user.zip
+      dest: /tmp
 
-    - name: Install NodeJS dependencies
-      ansible.builtin.shell: npm install
-      args:
-        chdir: /app
+  - name: extract user application
+    ansible.builtin.unarchive:
+      src: /tmp/user.zip
+      dest: /app
+      remote_src: yes
 
+  - name: Install dependencies
+    ansible.builtin.command: npm install
+    args:
+      chdir: /app
 
-    - name: copy user service
-      ansible.builtin.copy:
-        src: user.service
-        dest: /etc/systemd/system/user.service
+  - name: Copy user service
+    ansible.builtin.copy:
+      src: user.service
+      dest: /etc/systemd/system/user.service
 
-    - name: demon reload and start
-      ansible.builtin.systemd_service:
-        daemon_reload: true
+  - name: deamon realod and start
+    ansible.builtin.systemd_service:
+      daemon_reload: true
 
+  # let's start after the data is loaded
 
-    - name: setup mongodb repo file
-      ansible.builtin.copy:
-        src: mongo.repo
-        dest: /etc/yum.repos.d/mongo.repo
+  - name: Copy mongodb repo
+    ansible.builtin.copy:
+      src: mongodb.repo
+      dest: /etc/yum.repos.d/mongodb.repo
 
-    - name: install mangodb-client
-      ansible.builtin.dnf:
-        name: mongodb-org-shell
-        state: present
+  - name: Install mongodb client
+    ansible.builtin.package:
+      name: mongodb-org-shell
+      state: present
 
-    - name: Load Schema
-      ansible.builtin.shell: mongo --host mongodb.chowdary.cloud </app/schema/catalogue.js
+  - name: get the users count
+    ansible.builtin.command:  mongo --host mongodb.daws76s.online --quiet --eval 'db = db.getSiblingDB("users"); db.users.count()'
+    register: user_count
 
+  # - name: print the count
+  #   ansible.builtin.debug:
+  #     msg: "product count: {{user_count}}"
 
-    - name: start user service
-      ansible.builtin.service:
-        name: user
-        state: restarted
-        enabled: yes
+  - name: load user data
+    ansible.builtin.command: mongo --host mongodb.daws76s.online < /app/schema/user.js
+    when: user_count.stdout == "0" # keep double quotes
+
+  - name: start and enable user
+    ansible.builtin.service:
+      name: user
+      state: restarted
+      enabled: yes
