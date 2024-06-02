@@ -1,5 +1,5 @@
 - name: setup user
-  hosts: mangodb
+  hosts: mongodb
   become: yes
   tasks:
     - name: disable nodejs
