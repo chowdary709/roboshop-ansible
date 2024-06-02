@@ -28,10 +28,11 @@
         dest: /app
         remote_src: yes
 
-    - name: Install  dependencies
+    - name: Install NodeJS dependencies
       ansible.builtin.shell: npm install
       args:
         chdir: /app
+
 
     - name: copy user service
       ansible.builtin.copy:
@@ -39,7 +40,8 @@
         dest: /etc/systemd/system/user.service
 
     - name: demon reload and start
-      ansible.builtin.shell: npn install
+      ansible.builtin.systemd_service:
+        daemon_reload: true
 
 
     - name: setup mongodb repo file
