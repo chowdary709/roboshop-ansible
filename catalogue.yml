@@ -27,3 +27,8 @@
         src: https://roboshop-builds.s3.amazonaws.com/catalogue.zip
         dest: /app
         remote_src: yes
+
+    - name: Install NodeJS dependencies
+      ansible.builtin.shell: npm install
+        args:
+            chdir: /app
