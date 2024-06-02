@@ -1,5 +1,5 @@
-- name: setup mongodb
-  host: mongodb
+- name: Install mongodb component
+  hosts: mongodb
   become: yes
   tasks:
     - name: Setup host name
