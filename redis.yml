@@ -1,5 +1,5 @@
 - name: install redis component
-  hosts: mongodb
+  hosts: redis
   become: true
   tasks:
     - name: install remi release

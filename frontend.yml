@@ -1,5 +1,5 @@
-- name: Install web component
-  hosts: web
+- name: Install frontend component
+  hosts: frontend
   become: yes
   tasks:
     - name: Setup host name
