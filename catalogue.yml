@@ -59,9 +59,9 @@
       ansible.builtin.command:  mongo --host mongodb.chowdary.cloud --quiet --eval 'db = db.getSiblingDB("catalogue"); db.products.count()'
       register: product_count
 
-      - name: print the count
-        ansible.builtin.debug:
-          msg: "product count: {{product_count}}"
+    - name: print the count
+      ansible.builtin.debug:
+        msg: "product count: {{product_count}}"
 
     - name: Load Schema
       ansible.builtin.shell: mongo --host mongodb.chowdary.cloud </app/schema/catalogue.js
