@@ -3,10 +3,7 @@
   become: yes
   tasks:
     - name: disable nodejs
-      ansible.builtin.shell: dnf module disable nodejs -y
-
-    - name: enable nodejs
-      ansible.builtin.shell: dnf module enable nodejs:18 -y
+      ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:18 -y
 
     - name: install nodejs
       ansible.builtin.dnf:
@@ -39,7 +36,7 @@
       args:
         chdir: /app
 
-    - name: copy atalogue.service
+    - name: copy catalogue.service
       ansible.builtin.copy:
         src: catalogue.service
         dest: /etc/systemd/system/catalogue.service
