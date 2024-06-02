@@ -1,0 +1,30 @@
+- name: Install nginx
+  hosts: web
+  become: true
+  tasks:
+    - name: Install nginx
+      ansible.builtin.dnf:
+        name: nginx
+        state: present
+
+    - name: remove nginx web content
+      ansible.builtin.file:
+        path: /usr/share/nginx/html/*
+        state: absent ##
+
+    - name: download nginx web content
+      ansible.builtin.unarchive:
+        src:  https://roboshop-builds.s3.amazonaws.com/web.zip
+        dest: /usr/share/nginx/html
+        remote_src: yes
+
+    - name: Proxy Configuration
+      ansible.builtin.file:
+        src: roboshop.conf
+        dest: /etc/nginx/default.d/roboshop.conf
+
+    - name: Start service nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enable: true

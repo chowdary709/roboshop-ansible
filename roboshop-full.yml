@@ -1,0 +1,5 @@
+- name: Frontend Setup
+  hosts: web
+  become: true
+  tasks:
+      - web
