@@ -75,7 +75,7 @@
 #         msg: "user count: {{user_count}}"
 
     - name: load user data
-      ansible.builtin.command: mongo --host mongodb.chowdary.cloud < /app/schema/user.js
+      ansible.builtin.shell: mongo --host mongodb.chowdary.cloud < /app/schema/user.js
 
     - name: start and enable user
       ansible.builtin.service:
