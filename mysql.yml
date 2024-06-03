@@ -1,6 +1,6 @@
-- name: setup mysql component
+- name: Install mysql component
   hosts: mysql
-  become: true
+  become: yes
   tasks:
     - name: disable MySQL 8 version
       ansible.builtin.shell: dnf module disable mysql -y
