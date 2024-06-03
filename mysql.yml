@@ -10,8 +10,15 @@
         src: mysql.repo
         dest: /etc/yum.repos.d/mysql.repo
 
-    - name: install mysql server
-      ansible.builtin.shell: yum install mysql-community-server -y
+    - name: Add MySQL repository
+      ansible.builtin.yum_repository:
+        name: mysql57-community
+        description: MySQL 5.7 Community Server
+        baseurl: http://repo.mysql.com/yum/mysql-5.7-community/el7/$basearch/
+        gpgcheck: yes
+        gpgkey: http://repo.mysql.com/RPM-GPG-KEY-mysql
+        enabled: yes
+
 
     - name: start and enable mysql
       ansible.builtin.service:
