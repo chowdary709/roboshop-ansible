@@ -1,25 +1,25 @@
-- name: Setup MySQL server
+- name: install MySQL component
   hosts: mysql
   become: yes
   tasks:
-    - name: disable current version of mysql
-      ansible.builtin.shell: yum module disable mysql -y
+    - name: Disable current MySQL version
+      ansible.builtin.command: yum module disable mysql -y
 
-    - name: setup mysql5.7 repo
+    - name: copy mysql repo
       ansible.builtin.copy:
         src: mysql.repo
         dest: /etc/yum.repos.d/mysql.repo
 
-    - name: install mysql server
-      ansible.builtin.package:
+    - name: Install MySQL community server
+      ansible.builtin.yum:
         name: mysql-community-server
-        state: present
+        state: installed
 
-    - name: start and enable mysql
+    - name: restart mysql
       ansible.builtin.service:
         name: mysqld
         state: started
-        enabled: yes
+        enabled: true
 
-    - name: setup root password
-      ansible.builtin.shell: mysql_secure_installation --set-root-pass RoboShop@1
+    - name: setup mysql root password
+      ansible.builtin.command: mysql_secure_installation --set-root-pass RoboShop@1
