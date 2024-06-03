@@ -70,14 +70,13 @@
         cmd: mongo --host mongodb.chowdary.cloud --quiet --eval 'db = db.getSiblingDB("users"); db.users.count()'
       register: user_count
 
-    # - name: print the count
-    #   ansible.builtin.debug:
-    #     msg: "user count: {{user_count}}"
+#     - name: print the count
+#       ansible.builtin.debug:
+#         msg: "user count: {{user_count}}"
 
     - name: load user data
       ansible.builtin.command:
         cmd: mongo --host mongodb.chowdary.cloud < /app/schema/user.js
-      when: user_count.stdout == "0"
 
     - name: start and enable user
       ansible.builtin.service:
