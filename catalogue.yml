@@ -63,14 +63,10 @@
         name: mongodb-org-shell
         state: present
 
-    - name: get the categories count
-      ansible.builtin.command:
-        cmd: mongo --host mongodb.chowdary.cloud --quiet --eval 'db = db.getSiblingDB("catalogue"); db.products.count()'
-      register: product_count
+
 
     - name: load catalogue data
-      ansible.builtin.command:
-        cmd: mongo --host mongodb.chowdary.cloud < /app/schema/catalogue.js
+      ansible.builtin.command: mongo --host mongodb.chowdary.cloud < /app/schema/catalogue.js
 
 
     - name: start and enable catalogue
