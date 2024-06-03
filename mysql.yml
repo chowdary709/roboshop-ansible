@@ -29,6 +29,14 @@
         src: mysql.repo
         dest: /etc/yum.repos.d/mysql.repo
 
+    - name: install python mysql dependencies
+      ansible.builtin.pip:
+        name:
+            - PyMySQL
+            - cryptography
+        executable: pip3.9 # pip3.11 if python version is 3.11
+
+
     - name: Install MySQL Server
       ansible.builtin.dnf:
         name: mysql-server
