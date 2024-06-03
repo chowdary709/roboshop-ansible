@@ -19,4 +19,4 @@
       ansible.builtin.package:
         name: mysql-community-server
         state: present
-        enabled: yes
+
