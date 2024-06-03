@@ -2,8 +2,8 @@
   hosts: mysql
   become: yes
   tasks:
-    - name: Disable current MySQL version
-      ansible.builtin.command: dnf module disable mysql -y
+#     - name: Disable current MySQL version
+#       ansible.builtin.command: dnf module disable mysql -y
 
     - name: copy mysql repo
       ansible.builtin.copy:
